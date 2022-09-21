@@ -1,0 +1,48 @@
+#!/bin/bash
+echo -------------- Update source list --------------
+sudo apt-get update -y
+
+echo -------------- Install Python ------------------
+sudo apt-get install software-properties-common -y
+
+echo -------------- Remove Nodejs ------------------
+sudo apt-get remove nodejs -y
+
+echo -------------- Download node v16 ---------------
+curl -fsSL https://deb.nodesource.com/setup_16.x | sudo -E bash -
+
+echo ------------------ Install node ----------------
+sudo apt-get install -y nodejs
+
+echo ------------------ Install npm -----------------
+sudo apt-get install npm -y
+
+echo ------------- Installing Apache ----------------
+sudo apt install apache2 -y
+
+echo ------------ Enabling Apache Proxy -------------
+sudo a2enmod proxy
+sudo a2enmod proxy_http
+
+echo ------- Add nology Apache Proxy File -----------
+sudo cp /home/ubuntu/env/nodeapp/nology-proxy.conf /etc/apache2/sites-available
+sudo echo ls -la /etc/apache2/sites-available
+
+echo ------- Register nology Apache Proxy File ------
+sudo a2ensite nology-proxy.conf
+
+echo -------------- Restart Apache ------------------
+sudo systemctl reload apache2
+
+
+echo ------- Add start script to Service Folder ------
+sudo cp /home/ubuntu/env/nodeapp/nodeapp.service /etc/systemd/system
+ls -la /etc/systemd/system
+sudo systemctl daemon-reload
+#
+
+echo -------------- Install Dependancies ------------
+cd app
+sudo npm install forever -g
+npm install
+
